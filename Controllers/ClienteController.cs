@@ -19,7 +19,7 @@ namespace SisWebCrud.Controllers
 		// POST: Cliente/Create
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult Create([Bind("Nome,Tipo,Documento,Endereco,DataCadastro")] Cliente cliente, List<string> Telefones, int TelefoneAtivoId)
+		public IActionResult Create([Bind("Nome,Tipo,Documento,Endereco,DataCadastro,Sexo")] Cliente cliente, List<string> Telefones, int TelefoneAtivoId)
 		{
 			if (ModelState.IsValid)
 			{
@@ -65,7 +65,7 @@ namespace SisWebCrud.Controllers
 			}
 
 			var clientes = clientesQuery.ToList(); // Consulta NHibernate
-			//var clientes = _session.Query<Cliente>().ToList();
+												   //var clientes = _session.Query<Cliente>().ToList();
 			foreach (var cliente in clientes)
 			{
 				Console.WriteLine($"Id: {cliente.Id}, Nome: {cliente.Nome}, Tipo: {cliente.Tipo}");
@@ -108,7 +108,7 @@ namespace SisWebCrud.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult Edit(int id, [Bind("Id,Nome,Tipo,Documento,Endereco,DataCadastro")] Cliente cliente, List<string> Telefones, int TelefoneAtivoId)
+		public IActionResult Edit(int id, [Bind("Id,Nome,Tipo,Documento,Endereco,DataCadastro,Sexo")] Cliente cliente, List<string> Telefones, int TelefoneAtivoId)
 		{
 			if (id != cliente.Id)
 			{
@@ -130,6 +130,8 @@ namespace SisWebCrud.Controllers
 					clienteExistente.Documento = cliente.Documento;
 					clienteExistente.Endereco = cliente.Endereco;
 					clienteExistente.DataCadastro = cliente.DataCadastro;
+					clienteExistente.Sexo = cliente.Sexo; // <--- Adicionado: Atribuindo o valor do Sexo
+
 					clienteExistente.Telefones.Clear();
 
 					for (int i = 0; i < Telefones.Count; i++)

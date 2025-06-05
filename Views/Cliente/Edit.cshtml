@@ -43,83 +43,88 @@
                     </div>
                 </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label asp-for="DataCadastro" class="form-label">Data de Cadastro</label>
-                            <input asp-for="DataCadastro" class="form-control" type="text" />
-                        </div>             
-            
-                            <div class="col-md-3">
-                                <label class="form-label">Novo Telefone</label>
-                                <input type="text" id="NovoTelefone" class="form-control" placeholder="Digite um número" />                   
-                            </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="DataCadastro" class="form-label">Data de Cadastro</label>
+                        <input asp-for="DataCadastro" class="form-control" type="text" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Sexo" class="form-label">Sexo</label>
+                        <select asp-for="Sexo" class="form-control"
+                                asp-items="Html.GetEnumSelectList<SisWebCrud.Models.SexoCliente>()">
+                            <option selected="selected" value="">Selecione o Sexo</option>
+                        </select>
+                        <span asp-validation-for="Sexo" class="text-danger"></span>
+                    </div>
+                </div>
 
-                            <div class="col-md-1" align = "center" >
-                                 <label class="form-label d-block">Ativo?</label>
-                                <input type="checkbox" id="TelefoneAtivo" class="form-check-input ms-2" />
-                            </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Novo Telefone</label>
+                        <input type="text" id="NovoTelefone" class="form-control" placeholder="Digite um número" />
+                    </div>
+                    <div class="col-md-1" align="center">
+                        <label class="form-label d-block">Ativo?</label>
+                        <input type="checkbox" id="TelefoneAtivo" class="form-check-input ms-2" />
+                    </div>
+                    <div class="col-md-2" align="right">
+                        <button type="button" id="AdicionarTelefone" class="btn btn-success btn-sm mt-2">
+                            <i class="fas fa-plus"></i> Adicionar
+                        </button>
+                    </div>
+                </div>
 
-                            <div class="col-md-2" align = "right" >
-                                <button type="button" id="AdicionarTelefone" class="btn btn-success btn-sm mt-2">
-                                <i class="fas fa-plus"></i> Adicionar
-                            </div>
+                <div id="HiddenTelefones"></div>
 
-                     </div>                 
-
-                    <!-- Inputs ocultos para telefones adicionados -->
-                    <div id="HiddenTelefones"></div>                               
-
-                 <table class="table mt-3">
-                        <thead>
-                            <tr>
-                                <th>Número</th>
-                                <th>Ativo</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ListaTelefones">
-                            @if (Model.Telefones != null && Model.Telefones.Any())
-                            {
-                                foreach (var telefone in Model.Telefones)
-                                {
-                                    <tr>
-                                        <td>@telefone.Numero</td>
-                                        <td>
-                                            <input type="radio" name="TelefoneAtivoId" value="@telefone.Id" @(telefone.Ativo ? "checked" : "") />
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="removerTelefone('@telefone.Numero')">Remover</button>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
+                <table class="table mt-3">
+                    <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Ativo</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ListaTelefones">
+                        @if (Model.Telefones != null && Model.Telefones.Any())
+                        {
+                            foreach (var telefone in Model.Telefones)
                             {
                                 <tr>
-                                    <td colspan="3" class="text-center">Nenhum telefone cadastrado</td>
+                                    <td>@telefone.Numero</td>
+                                    <td>
+                                        <input type="radio" name="TelefoneAtivoId" value="@telefone.Id" @(telefone.Ativo ? "checked" : "") />
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removerTelefone('@telefone.Numero')">Remover</button>
+                                    </td>
                                 </tr>
                             }
-                        </tbody>
-                    </table>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center">Nenhum telefone cadastrado</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
 
-                    <p>
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-success btn-sm">
-                                <i class="fas fa-save"></i> Salvar
-                            </button>
-                            <a asp-controller="Cliente" asp-action="Index" class="btn btn-secondary btn-sm">
-                                <i class="fas fa-list"></i> Voltar para Lista
-                            </a>
-                     </div>
-                    </p>          
+                <p>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-success btn-sm">
+                            <i class="fas fa-save"></i> Salvar
+                        </button>
+                        <a asp-controller="Cliente" asp-action="Index" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-list"></i> Voltar para Lista
+                        </a>
+                    </div>
+                </p>
 
-                    </form>       
+            </form>
 
-             </div>
-              </div>
         </div>
-
-       
+    </div>
+</div>
 
 @section Scripts {
     <script>

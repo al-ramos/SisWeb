@@ -4,7 +4,6 @@
     ViewData["Title"] = "Cadastrar Cliente";
 }
 
-<!-- Biblioteca do Flatpickr -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <div class="container mt-4">
@@ -51,6 +50,14 @@
                         <label asp-for="DataCadastro" class="form-label">Data de Cadastro</label>
                         <input asp-for="DataCadastro" class="form-control" type="text" id="DataCadastro" />
                     </div>
+                    <div class="col-md-6">
+                        <label asp-for="Sexo" class="form-label">Sexo</label>
+                        <select asp-for="Sexo" class="form-control"
+                                asp-items="Html.GetEnumSelectList<SisWebCrud.Models.SexoCliente>()">
+                            <option selected="selected" value="">Selecione o Sexo</option>
+                        </select>
+                        <span asp-validation-for="Sexo" class="text-danger"></span>
+                    </div>
                 </div>
 
                 <div class="row mb-3 align-items-center">
@@ -69,7 +76,6 @@
                     </div>
                 </div>
 
-                <!-- Lista de Telefones -->
                 <table class="table table-striped mt-3">
                     <thead class="table-light">
                         <tr>
@@ -105,7 +111,6 @@
                     </tbody>
                 </table>
 
-                <!-- Inputs ocultos para telefones adicionados -->
                 <div id="HiddenTelefones"></div>
 
                 <div class="text-end mt-3">
@@ -122,7 +127,6 @@
 </div>
 
 @section Scripts {
-    <!-- Biblioteca Flatpickr -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         $(document).ready(function () {
