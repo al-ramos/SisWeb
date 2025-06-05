@@ -18,6 +18,10 @@ public class ClienteMap : ClassMap<Cliente>
 		Map(x => x.Endereco).Nullable().Length(500);
 		Map(x => x.DataCadastro).Not.Nullable();
 		Map(x => x.IsDeleted).Not.Nullable();
+		Map(x => x.Sexo) // 🔥 Confirme que isso está presente
+			.CustomType<int>()
+			.Column("Sexo")
+			.Not.Nullable();
 
 		HasMany(x => x.Telefones)
 			.KeyColumn("ClienteId")
