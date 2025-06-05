@@ -17,9 +17,9 @@
                     <input type="text" class="form-control" id="filtroDocumento" name="filtroDocumento" value="@ViewData["FiltroDocumento"]">
                 </div>
             </div>
-            <div class="mt-2">
-                <button type="submit" class="btn btn-primary" aria-label="Filtrar clientes">Filtrar</button>
-                <a asp-action="Index" class="btn btn-outline-secondary">Recarregar</a>
+            <div class="mt-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-fill" aria-label="Filtrar clientes">Filtrar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary flex-fill">Recarregar</a>
             </div>
         </form>
 
@@ -32,7 +32,8 @@
                         <th>Tipo</th>
                         <th>Documento</th>
                         <th>Sexo</th>
-                        <th>Endereço</th> <th>Telefones</th>
+                        <th>Endereço</th>
+                        <th>Telefones</th>
                         <th class="text-center">Ações</th>
                     </tr>
                 </thead>
@@ -45,17 +46,18 @@
                             <td>@cliente.Tipo</td>
                             <td>@cliente.Documento</td>
                             <td>@cliente.Sexo</td>
-                            <td>@cliente.Endereco</td> <td>
+                            <td>@cliente.Endereco</td>
+                            <td>
                                 @(cliente.Telefones != null && cliente.Telefones.Any()
                                     ? string.Join(", ", cliente.Telefones.Select(t => t.Numero + (t.Ativo ? " (Ativo)" : "")))
                                     : "Nenhum telefone cadastrado")
                             </td>
-                            <td class="text-center">
-                                <a asp-action="Edit" asp-route-id="@cliente.Id" class="btn btn-sm btn-warning">
+                            <td class="text-center d-flex gap-2">
+                                <a asp-action="Edit" asp-route-id="@cliente.Id" class="btn btn-warning flex-fill">
                                     <i class="fas fa-edit me-1"></i> Editar
                                 </a>
                                 <form asp-action="Delete" asp-route-id="@cliente.Id" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-sm btn-danger"
+                                    <button type="submit" class="btn btn-danger flex-fill"
                                             onclick="return confirm('Tem certeza que deseja excluir este cliente?');">
                                         <i class="fas fa-trash-alt me-1"></i> Excluir
                                     </button>
@@ -67,11 +69,11 @@
             </table>
         </div>
 
-        <div class="mb-3 text-end">
-            <a asp-controller="Cliente" asp-action="Create" class="btn btn-success btn-sm">
+        <div class="mb-3 text-end d-flex gap-2">
+            <a asp-controller="Cliente" asp-action="Create" class="btn btn-success flex-fill">
                 <i class="fas fa-plus"></i> Novo Cliente
             </a>
-            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-sm">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary flex-fill">
                 <i class="fas fa-home"></i> Home
             </a>
         </div>
