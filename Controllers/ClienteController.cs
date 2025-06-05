@@ -13,10 +13,9 @@ namespace SisWebCrud.Controllers
 
 		public ClienteController()
 		{
-			_session = NHibernateHelper.OpenSession(); // Abrindo sessão NHibernate
+			_session = NHibernateHelper.OpenSession();
 		}
 
-		// POST: Cliente/Create
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public IActionResult Create([Bind("Nome,Tipo,Documento,Endereco,DataCadastro,Sexo")] Cliente cliente, List<string> Telefones, int TelefoneAtivoId)
@@ -31,7 +30,7 @@ namespace SisWebCrud.Controllers
 					{
 						Numero = Telefones[i],
 						Ativo = i == TelefoneAtivoId,
-						Cliente = cliente // O telefone precisa ter um Cliente associado!
+						Cliente = cliente
 					};
 					cliente.Telefones.Add(telefone);
 				}
@@ -48,8 +47,6 @@ namespace SisWebCrud.Controllers
 			return View(cliente);
 		}
 
-
-		// GET: Cliente
 		public IActionResult Index(string filtroNome, string filtroDocumento)
 		{
 			var clientesQuery = _session.Query<Cliente>().Where(c => !c.IsDeleted);
@@ -64,15 +61,12 @@ namespace SisWebCrud.Controllers
 				clientesQuery = clientesQuery.Where(c => c.Documento.Contains(filtroDocumento));
 			}
 
-			var clientes = clientesQuery.ToList(); // Consulta NHibernate
-												   //var clientes = _session.Query<Cliente>().ToList();
+			var clientes = clientesQuery.ToList();
 			foreach (var cliente in clientes)
 			{
 				Console.WriteLine($"Id: {cliente.Id}, Nome: {cliente.Nome}, Tipo: {cliente.Tipo}");
 			}
 
-
-			// Debug: Verificando os valores de TipoCliente
 			foreach (var cliente in clientes)
 			{
 				Console.WriteLine($"Id: {cliente.Id}, Nome: {cliente.Nome}, Tipo: {cliente.Tipo}");
@@ -81,14 +75,12 @@ namespace SisWebCrud.Controllers
 			return View(clientes);
 		}
 
-		// GET: Cliente/Create
 		public IActionResult Create()
 		{
 			var cliente = new Cliente { Telefones = new List<Telefone>(), DataCadastro = DateTime.Now };
 			return View(cliente);
 		}
 
-		// GET: Cliente/Edit
 		public IActionResult Edit(int? id)
 		{
 			if (id == null)
@@ -130,7 +122,7 @@ namespace SisWebCrud.Controllers
 					clienteExistente.Documento = cliente.Documento;
 					clienteExistente.Endereco = cliente.Endereco;
 					clienteExistente.DataCadastro = cliente.DataCadastro;
-					clienteExistente.Sexo = cliente.Sexo; // <--- Adicionado: Atribuindo o valor do Sexo
+					clienteExistente.Sexo = cliente.Sexo;
 
 					clienteExistente.Telefones.Clear();
 
@@ -140,7 +132,7 @@ namespace SisWebCrud.Controllers
 						{
 							Numero = Telefones[i],
 							Ativo = i == TelefoneAtivoId,
-							Cliente = clienteExistente // Corrigindo a referência ao Cliente
+							Cliente = clienteExistente
 						};
 
 						clienteExistente.Telefones.Add(telefone);
@@ -164,8 +156,6 @@ namespace SisWebCrud.Controllers
 			return View(cliente);
 		}
 
-
-		// GET: Cliente/Delete
 		public IActionResult Delete(int? id)
 		{
 			if (id == null)
@@ -183,7 +173,6 @@ namespace SisWebCrud.Controllers
 			return View(cliente);
 		}
 
-		// POST: Cliente/Delete
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
 		public IActionResult DeleteConfirmed(int id)
@@ -191,7 +180,7 @@ namespace SisWebCrud.Controllers
 			var cliente = _session.Get<Cliente>(id);
 			if (cliente != null)
 			{
-				cliente.IsDeleted = true; // Soft delete
+				cliente.IsDeleted = true;
 
 				using (var transaction = _session.BeginTransaction())
 				{

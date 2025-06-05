@@ -131,7 +131,6 @@
         $(document).ready(function () {
             var telefones = [];
 
-            // Carregar os telefones já existentes no cliente
             @if (Model.Telefones != null && Model.Telefones.Any())
             {
                 foreach (var telefone in Model.Telefones)
