@@ -1,0 +1,58 @@
+﻿@model SisWebCrud.Models.Cliente
+
+@{
+    ViewData["Title"] = "Remover Cliente";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+            <h3 class="mb-0">Remover Cliente</h3>
+        </div>
+
+        <div class="card-body">
+            <h3 class="text-danger">Tem certeza que deseja remover este cliente?</h3>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">Nome</dt>
+                <dd class="col-sm-10">@Html.DisplayFor(model => model.Nome)</dd>
+
+                <dt class="col-sm-2">Tipo</dt>
+                <dd class="col-sm-10">@Html.DisplayFor(model => model.Tipo)</dd>
+
+                <dt class="col-sm-2">Documento</dt>
+                <dd class="col-sm-10">@Html.DisplayFor(model => model.Documento)</dd>
+
+                <dt class="col-sm-2">Data de Cadastro</dt>
+                <dd class="col-sm-10">@Html.DisplayFor(model => model.DataCadastro)</dd>
+
+                <dt class="col-sm-2">Telefones</dt>
+                <dd class="col-sm-10">
+                    @if (Model.Telefones != null && Model.Telefones.Any())
+                    {
+                        foreach (var telefone in Model.Telefones)
+                        {
+                            <p>@telefone.Numero @(telefone.Ativo ? "(Ativo)" : "")</p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-warning">Nenhum telefone cadastrado.</p>
+                    }
+                </dd>
+            </dl>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div class="text-end">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Remover
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> Voltar para a Lista
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<SisWebCrud.Models.Cliente>
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Clientes</h3>
+        </div>
+
+        <!-- Formulário de Filtros -->
+        <form asp-action="Index" method="get" class="mb-3">
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="filtroNome" class="form-label">Filtrar por Nome:</label>
+                    <input type="text" class="form-control" id="filtroNome" name="filtroNome" value="@ViewData["FiltroNome"]">
+                </div>
+                <div class="col-md-6">
+                    <label for="filtroDocumento" class="form-label">Filtrar por Documento:</label>
+                    <input type="text" class="form-control" id="filtroDocumento" name="filtroDocumento" value="@ViewData["FiltroDocumento"]">
+                </div>
+            </div>
+            <div class="mt-2">
+                <button type="submit" class="btn btn-primary" aria-label="Filtrar clientes">Filtrar</button>                
+                <a asp-action="Index" class="btn btn-outline-secondary">Recarregar</a>
+            </div>
+        </form>
+
+        <!-- Tabela de Clientes -->
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Tipo</th>
+                        <th>Documento</th>
+                        <th>Telefones</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cliente in Model)
+                    {
+                        <tr>
+                            <td>@cliente.Id</td>
+                            <td>@cliente.Nome</td>
+                            <td>@cliente.Tipo</td>
+                            <td>@cliente.Documento</td>
+                            <td>
+                                @(cliente.Telefones != null && cliente.Telefones.Any() 
+                                    ? string.Join(", ", cliente.Telefones.Select(t => t.Numero + (t.Ativo ? " (Ativo)" : ""))) 
+                                    : "Nenhum telefone cadastrado")
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="Edit" asp-route-id="@cliente.Id" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit me-1"></i> Editar
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@cliente.Id" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Tem certeza que deseja excluir este cliente?');">
+                                        <i class="fas fa-trash-alt me-1"></i> Excluir
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Botões de Navegação -->
+        <div class="mb-3 text-end">
+            <a asp-controller="Cliente" asp-action="Create" class="btn btn-success btn-sm">
+                <i class="fas fa-plus"></i> Novo Cliente
+            </a> 
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-home"></i> Home
+            </a>
+        </div>
+    </div>
+</div>
+

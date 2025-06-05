@@ -1,0 +1,199 @@
+﻿@model SisWebCrud.Models.Cliente
+
+@{
+    ViewData["Title"] = "Cadastrar Cliente";
+}
+
+<!-- Biblioteca do Flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Cadastrar Cliente</h3>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="Nome" class="form-label">Nome</label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Tipo" class="form-label">Tipo</label>
+                        <select asp-for="Tipo" class="form-control">
+                            <option value="PF">PF (Pessoa Física)</option>
+                            <option value="PJ">PJ (Pessoa Jurídica)</option>
+                        </select>
+                        <span asp-validation-for="Tipo" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="Documento" class="form-label">Documento</label>
+                        <input asp-for="Documento" class="form-control" value="@Model.Documento" />
+                        <span asp-validation-for="Documento" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Endereco" class="form-label">Endereço</label>
+                        <input asp-for="Endereco" class="form-control" />
+                        <span asp-validation-for="Endereco" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="DataCadastro" class="form-label">Data de Cadastro</label>
+                        <input asp-for="DataCadastro" class="form-control" type="text" id="DataCadastro" />
+                    </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                    <div class="col-md-5">
+                        <label class="form-label">Novo Telefone</label>
+                        <input type="text" id="NovoTelefone" class="form-control" placeholder="Digite um número" />
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <label class="form-label d-block">Ativo?</label>
+                        <input type="checkbox" id="TelefoneAtivo" class="form-check-input ms-2" />
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button type="button" id="AdicionarTelefone" class="btn btn-success btn-sm mt-2">
+                            <i class="fas fa-plus"></i> Adicionar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lista de Telefones -->
+                <table class="table table-striped mt-3">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Número</th>
+                            <th class="text-center">Ativo</th>
+                            <th class="text-center">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ListaTelefones">
+                        @if (Model.Telefones != null && Model.Telefones.Any())
+                        {
+                            foreach (var telefone in Model.Telefones)
+                            {
+                                <tr>
+                                    <td>@telefone.Numero</td>
+                                    <td class="text-center">
+                                        <input type="radio" name="TelefoneAtivoId" value="@telefone.Id" @(telefone.Ativo ? "checked" : "") />
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removerTelefone('@telefone.Numero')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center">Nenhum telefone cadastrado</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Inputs ocultos para telefones adicionados -->
+                <div id="HiddenTelefones"></div>
+
+                <div class="text-end mt-3">
+                    <button type="submit" class="btn btn-success btn-sm">
+                        <i class="fas fa-save"></i> Salvar
+                    </button>
+                    <a asp-controller="Cliente" asp-action="Index" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-list"></i> Voltar para Lista
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Biblioteca Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        $(document).ready(function () {
+            flatpickr("#DataCadastro", {
+                enableTime: false,
+                dateFormat: "d/m/Y",
+                defaultDate: "@Model.DataCadastro.ToString("yyyy-MM-dd")"
+            });
+
+            var telefones = [];
+
+            // Carregar os telefones já existentes no cliente
+            @if (Model.Telefones != null && Model.Telefones.Any())
+            {
+                foreach (var telefone in Model.Telefones)
+                {
+                    <text>
+                        telefones.push({ numero: "@telefone.Numero", ativo: @telefone.Ativo.ToString().ToLower() });
+                    </text>
+                }
+            }
+
+            atualizarLista();
+
+            $("#AdicionarTelefone").click(function () {
+                var numero = $("#NovoTelefone").val();
+                var ativo = $("#TelefoneAtivo").prop("checked");
+
+                if (!numero) {
+                    alert("Digite um número válido.");
+                    return;
+                }
+
+                if (ativo) {
+                    telefones.forEach(t => t.ativo = false);
+                }
+
+                telefones.push({ numero: numero, ativo: ativo });
+
+                atualizarLista();
+                $("#NovoTelefone").val("");
+                $("#TelefoneAtivo").prop("checked", false);
+            });
+
+            function atualizarLista() {
+                $("#ListaTelefones").empty();
+                $("#HiddenTelefones").empty();
+
+                telefones.forEach((t, index) => {
+                    $("#ListaTelefones").append(`
+                        <tr>
+                            <td>${t.numero}</td>
+                            <td class="text-center">
+                                <input type="radio" name="TelefoneAtivoId" value="${index}" ${t.ativo ? "checked" : ""} />
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-danger btn-sm" onclick="removerTelefone(${index})">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+
+                    $("#HiddenTelefones").append(`<input type="hidden" name="Telefones[]" value="${t.numero}" />`);
+                });
+            }
+
+            window.removerTelefone = function (index) {
+                telefones.splice(index, 1);
+                atualizarLista();
+            };
+        });
+    </script>
+}
